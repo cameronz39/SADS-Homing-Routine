@@ -1,0 +1,39 @@
+../Core/Src/TimerArrayControl.cpp:8:6:void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef*)	1
+../Core/Src/TimerArrayControl.cpp:26:1:TimerArrayControl::TimerFeed::TimerFeed(TIM_HandleTypeDef*, uint8_t)	1
+../Core/Src/TimerArrayControl.cpp:32:8:Timer* TimerArrayControl::TimerFeed::findTimerInsertionLink(Timer*, Timer*)	4
+../Core/Src/TimerArrayControl.cpp:42:6:void TimerArrayControl::TimerFeed::insertTimer(Timer*, Timer*)	2
+../Core/Src/TimerArrayControl.cpp:54:6:void TimerArrayControl::TimerFeed::insertTimer(Timer*)	1
+../Core/Src/TimerArrayControl.cpp:59:6:void TimerArrayControl::TimerFeed::removeTimer(Timer*)	6
+../Core/Src/TimerArrayControl.cpp:74:6:void TimerArrayControl::TimerFeed::updateTimerTarget(Timer*, uint32_t)	11
+../Core/Src/TimerArrayControl.cpp:116:6:bool TimerArrayControl::TimerFeed::isSooner(uint32_t, uint32_t)	1
+../Core/Src/TimerArrayControl.cpp:120:6:void TimerArrayControl::TimerFeed::updateTime()	1
+../Core/Src/TimerArrayControl.cpp:124:6:void TimerArrayControl::TimerFeed::updateTickTime()	2
+../Core/Src/TimerArrayControl.cpp:134:10:uint32_t TimerArrayControl::TimerFeed::calculateNextFireInSync(uint32_t, uint32_t) const	1
+../Core/Src/TimerArrayControl.cpp:147:1:TimerArrayControl::TimerArrayControl(TIM_HandleTypeDef*, uint32_t, uint32_t, uint8_t)	1
+../Core/Src/TimerArrayControl.cpp:154:6:void TimerArrayControl::begin()	2
+../Core/Src/TimerArrayControl.cpp:177:6:void TimerArrayControl::stop()	1
+../Core/Src/TimerArrayControl.cpp:186:6:virtual void TimerArrayControl::chainedCallback(TIM_HandleTypeDef*)	2
+../Core/Src/TimerArrayControl.cpp:193:6:void TimerArrayControl::tick()	5
+../Core/Src/TimerArrayControl.cpp:233:6:void TimerArrayControl::registerAttachedTimer(Timer*)	2
+../Core/Src/TimerArrayControl.cpp:245:6:void TimerArrayControl::registerDetachedTimer(Timer*)	2
+../Core/Src/TimerArrayControl.cpp:250:6:void TimerArrayControl::registerDelayChange(Timer*, uint32_t)	3
+../Core/Src/TimerArrayControl.cpp:276:6:void TimerArrayControl::registerAttachedTimerInSync(Timer*, Timer*)	2
+../Core/Src/TimerArrayControl.cpp:290:6:void TimerArrayControl::registerManualFire(Timer*)	3
+../Core/Src/TimerArrayControl.cpp:312:6:void TimerArrayControl::attachTimer(Timer*)	2
+../Core/Src/TimerArrayControl.cpp:329:6:void TimerArrayControl::detachTimer(Timer*)	2
+../Core/Src/TimerArrayControl.cpp:346:6:void TimerArrayControl::changeTimerDelay(Timer*, uint32_t)	2
+../Core/Src/TimerArrayControl.cpp:362:6:void TimerArrayControl::attachTimerInSync(Timer*, Timer*)	2
+../Core/Src/TimerArrayControl.cpp:378:6:void TimerArrayControl::manualFire(Timer*)	2
+../Core/Src/TimerArrayControl.cpp:394:6:void TimerArrayControl::disableInterrupt()	1
+../Core/Src/TimerArrayControl.cpp:398:6:void TimerArrayControl::enableInterrupt()	1
+../Core/Src/TimerArrayControl.cpp:403:6:bool TimerArrayControl::isRunning() const	1
+../Core/Src/TimerArrayControl.cpp:408:6:void TimerArrayControl::sleep(uint32_t) const	3
+../Core/Src/TimerArrayControl.cpp:426:10:uint32_t TimerArrayControl::remainingTicks(Timer*) const	2
+../Core/Src/TimerArrayControl.cpp:432:10:uint32_t TimerArrayControl::elapsedTicks(Timer*) const	2
+../Core/Src/TimerArrayControl.cpp:437:7:float TimerArrayControl::actualTickFrequency() const	1
+../Core/Inc/TimerArrayInc/CallbackChain.hpp:35:6:) [with ChainID = TIM_OC_DelayElapsed_CallbackChainID; Args = {TIM_HandleTypeDef*}]	2
+../Core/Inc/TimerArrayInc/CallbackChain.hpp:21:1:CallbackChain<ChainID, Args>::CallbackChain() [with ChainID = TIM_OC_DelayElapsed_CallbackChainID; Args = {TIM_HandleTypeDef*}]	1
+../Core/Inc/TimerArrayInc/CallbackChain.hpp:26:1:CallbackChain<ChainID, Args>::~CallbackChain() [with ChainID = TIM_OC_DelayElapsed_CallbackChainID; Args = {TIM_HandleTypeDef*}]	2
+../Core/Inc/TimerArrayInc/CallbackChain.hpp:26:1:CallbackChain<ChainID, Args>::~CallbackChain() [with ChainID = TIM_OC_DelayElapsed_CallbackChainID; Args = {TIM_HandleTypeDef*}]	1
+../Core/Inc/TimerArrayInc/TimerArrayControl.hpp:29:7:TimerArrayControl::~TimerArrayControl()	1
+../Core/Inc/TimerArrayInc/TimerArrayControl.hpp:29:7:virtual TimerArrayControl::~TimerArrayControl()	1

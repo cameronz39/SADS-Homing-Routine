@@ -1,0 +1,4 @@
+../Core/Src/stepperControl_wrapper.cpp:15:6:void stepperControl_init_wrapper()	8	static
+../Core/Src/stepperControl_wrapper.cpp:19:6:void stepperControl_home_wrapper()	8	static
+../Core/Src/stepperControl_wrapper.cpp:23:6:void setStepperDesiredPos(uint8_t, int)	16	static
+../Core/Src/stepperControl_wrapper.cpp:29:5:int getStepperCurrentPos(uint8_t)	16	static
