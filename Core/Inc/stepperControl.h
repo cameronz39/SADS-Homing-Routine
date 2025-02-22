@@ -2,15 +2,11 @@
 #define INC_STEPPERCONTROL_H_
 
 #include "main.h"
-#include "TimerArrayInc/STM32TimerArray.hpp"
+#include "string.h"
+#include "stdio.h"
 
-#include <cstring>
-#include <cstdio>
-
-
-
-const int STEPS_PER_REV = 800;
-const int HOMING_STEPS_REQ = STEPS_PER_REV*9;
+static const int STEPS_PER_REV = 800;
+static const int HOMING_STEPS_REQ = STEPS_PER_REV*9;
 
 // Function prototypes and variables can use C++ linkage now.
 void stepperControl_init();
@@ -26,8 +22,14 @@ typedef struct {
     // Motion state
     volatile int currentPos;   // current step count
     volatile int desiredPos;   // target step count
+    char active;
     // Timer for stepping (assume your Timer library supports a context pointer)
-    Timer *stepTimer;
+    // Timer *stepTimer;
 } StepperMotor;
+
+extern StepperMotor motor1;
+extern StepperMotor motor2;
+extern StepperMotor motor3;
+extern StepperMotor motor4;
 
 #endif

@@ -1,8 +1,0 @@
-../Core/Src/Timer.cpp:8:1:Timer::Timer(callback_function)	16	static
-../Core/Src/Timer.cpp:12:1:Timer::Timer(uint32_t, bool, callback_function)	24	static
-../Core/Src/Timer.cpp:16:6:bool Timer::isRunning() const	16	static
-../Core/Src/Timer.cpp:20:6:bool Timer::isPeriodic() const	16	static
-../Core/Src/Timer.cpp:24:10:uint32_t Timer::delay() const	16	static
-../Core/Src/Timer.cpp:28:6:void Timer::periodic(bool)	16	static
-../Core/Src/Timer.cpp:33:6:void Timer::delay(uint32_t)	16	static
-../Core/Src/Timer.cpp:38:6:virtual void Timer::fire()	16	static

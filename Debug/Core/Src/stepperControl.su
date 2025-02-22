@@ -1,17 +1,5 @@
-../Core/Src/stepperControl.cpp:30:6:void doStep(void*)	24	static
-../Core/Src/stepperControl.cpp:59:6:void motor4_callback(StepperMotor*)	16	static
-../Core/Src/stepperControl.cpp:62:6:void motor3_callback(StepperMotor*)	16	static
-../Core/Src/stepperControl.cpp:65:6:void motor2_callback(StepperMotor*)	16	static
-../Core/Src/stepperControl.cpp:68:6:void motor1_callback(StepperMotor*)	16	static
-../Core/Src/stepperControl.cpp:72:6:void stepperControl_init()	8	static
-../Core/Src/stepperControl.cpp:117:6:void home()	16	static
-../Core/Src/stepperControl.cpp:147:17:void HAL_GPIO_EXTI_Callback(uint16_t)	32	static,ignoring_inline_asm
-../Core/Inc/TimerArrayInc/Timer.hpp:53:5:ContextTimer<Context>::ContextTimer(uint32_t, bool, Context*, dynamic_callback_function) [with Context = StepperMotor]	24	static
-../Core/Inc/TimerArrayInc/TimerArrayControl.hpp:29:7:TimerArrayControl::~TimerArrayControl()	16	static
-../Core/Inc/TimerArrayInc/TimerArrayControl.hpp:29:7:virtual TimerArrayControl::~TimerArrayControl()	16	static
-../Core/Src/stepperControl.cpp:187:1:void __static_initialization_and_destruction_0(int, int)	24	static
-../Core/Inc/TimerArrayInc/Timer.hpp:57:18:void ContextTimer<Context>::fire() [with Context = StepperMotor]	16	static
-../Core/Inc/TimerArrayInc/CallbackChain.hpp:26:1:CallbackChain<ChainID, Args>::~CallbackChain() [with ChainID = TIM_OC_DelayElapsed_CallbackChainID; Args = {TIM_HandleTypeDef*}]	24	static
-../Core/Inc/TimerArrayInc/CallbackChain.hpp:26:1:CallbackChain<ChainID, Args>::~CallbackChain() [with ChainID = TIM_OC_DelayElapsed_CallbackChainID; Args = {TIM_HandleTypeDef*}]	16	static
-../Core/Src/stepperControl.cpp:187:1:cpp)	8	static
-../Core/Src/stepperControl.cpp:187:1:cpp)	8	static
+../Core/Src/stepperControl.c:14:6:doStep	16	static
+../Core/Src/stepperControl.c:49:6:stepperControl_init	4	static
+../Core/Src/stepperControl.c:88:6:home	16	static
+../Core/Src/stepperControl.c:116:6:HAL_GPIO_EXTI_Callback	32	static,ignoring_inline_asm
+../Core/Src/stepperControl.c:155:6:HAL_TIM_PeriodElapsedCallback	16	static

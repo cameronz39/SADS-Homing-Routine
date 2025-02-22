@@ -22,7 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
-#include <stepperControl_wrapper.h>
+#include <stepperControl.h>
 #include <string.h>
 #include "MTi.h"
 /* USER CODE END Includes */
@@ -101,19 +101,21 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  MTi_init();
-  HAL_Delay(5000);
-  stepperControl_init_wrapper();
-  stepperControl_home_wrapper();
+  HAL_TIM_Base_Start_IT(&htim2); // Start TIM2 interrupts
+  uint8_t sampleRate = 0x50;
+//  MTi_init(sampleRate);
+//  HAL_Delay(5000);
+  stepperControl_init();
+  home();
 
-  MTi_goToMeasurement();
+//  MTi_goToMeasurement();
 
-  float measurements[3];
-  float roll;
-  float pitch;
-  float yaw;
-  int len;
-  char g_textBuffer[80];
+//  float measurements[3];
+//  float roll;
+//  float pitch;
+//  float yaw;
+//  int len;
+//  char g_textBuffer[80];
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -123,16 +125,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	MTi_step(measurements, 3);
-	roll = measurements[0];
-	pitch = measurements[1];
-	yaw = measurements[2];
-
-//	len = snprintf(g_textBuffer, sizeof(g_textBuffer), "XMID_MtData2: roll = %.2f, pitch = %.2f, yaw = %.2f\n", roll , pitch, yaw);
-//	HAL_UART_Transmit(&huart2, (uint8_t*)g_textBuffer, len, 100);
-
-	setStepperDesiredPos(0, 12*(int)roll);
-	setStepperDesiredPos(1, 12*(int)pitch);
   }
   /* USER CODE END 3 */
 }
@@ -244,9 +236,9 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 0;
+  htim2.Init.Prescaler = 17999;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 4294967295;
+  htim2.Init.Period = 2;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)

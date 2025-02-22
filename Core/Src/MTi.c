@@ -6,7 +6,6 @@
  */
 
 #include "MTi.h"
-void MTi_init();
 
 char UART_buffer[100];
 int len = 0;
@@ -25,7 +24,7 @@ uint16_t notificationMessageSize;
 uint16_t measurementMessageSize;
 uint8_t status[4];
 
-void MTi_init() {
+void MTi_init(uint8_t sampleRate) {
 	m_dataBuffer[0] = XBUS_PREAMBLE;
 	m_dataBuffer[1] = XBUS_MASTERDEVICE;
 
@@ -65,14 +64,27 @@ void MTi_init() {
 					len = snprintf(UART_buffer, sizeof(UART_buffer), "Got Device ID\n");
 					HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 10000);
 
-					Xbus_message(m_xbusTxBuffer, 0xFF, XMID_SetOutputConfig, 4);
+					Xbus_message(m_xbusTxBuffer, 0xFF, XMID_SetOutputConfig, 12);
 					// Set Output mode: Euler angles (0x2030)
 					Xbus_getPointerToPayload(m_xbusTxBuffer)[0] = 0x20;
 					Xbus_getPointerToPayload(m_xbusTxBuffer)[1] = 0x30;
-					// Set Output rate: 1Hz (0x0064)
+					// Set Output rate
 					Xbus_getPointerToPayload(m_xbusTxBuffer)[2] = 0x00;
-					Xbus_getPointerToPayload(m_xbusTxBuffer)[3] = 0x50;
+					Xbus_getPointerToPayload(m_xbusTxBuffer)[3] = sampleRate;
 
+					// Set Output mode: Quaternion (0x2010)
+					Xbus_getPointerToPayload(m_xbusTxBuffer)[4] = 0x20;
+					Xbus_getPointerToPayload(m_xbusTxBuffer)[5] = 0x10;
+					// Set Output rate
+					Xbus_getPointerToPayload(m_xbusTxBuffer)[6] = 0x00;
+					Xbus_getPointerToPayload(m_xbusTxBuffer)[7] = sampleRate;
+
+					// Set Output mode: Body Rates (0x8020)
+					Xbus_getPointerToPayload(m_xbusTxBuffer)[8] = 0x80;
+					Xbus_getPointerToPayload(m_xbusTxBuffer)[9] = 0x20;
+					// Set Output rate
+					Xbus_getPointerToPayload(m_xbusTxBuffer)[10] = 0x00;
+					Xbus_getPointerToPayload(m_xbusTxBuffer)[11] = sampleRate;
 
 					rawLength = Xbus_createRawMessageHelper(buffer, m_xbusTxBuffer);
 					HAL_I2C_Master_Transmit(&hi2c1, (MTI_I2C_DEVICE_ADDRESS << 1), (uint8_t*)buffer, rawLength, 100);

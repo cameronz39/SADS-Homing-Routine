@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <string.h>
 
-void MTi_init();
+void MTi_init(uint8_t sampleRate);
 void MTi_goToMeasurement();
 void MTi_step();
 

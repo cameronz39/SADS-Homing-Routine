@@ -58,34 +58,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := SADS_MBS
+BUILD_ARTIFACT_NAME := SADS_MBS_Homing
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-SADS_MBS.elf \
+SADS_MBS_Homing.elf \
 
 MAP_FILES += \
-SADS_MBS.map \
+SADS_MBS_Homing.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-SADS_MBS.list \
+SADS_MBS_Homing.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: SADS_MBS.elf secondary-outputs
+main-build: SADS_MBS_Homing.elf secondary-outputs
 
 # Tool invocations
-SADS_MBS.elf SADS_MBS.map: $(OBJS) $(USER_OBJS) C:\Users\camer\STM32CubeIDE\workspace_1.17.0\SADS_MBS\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "SADS_MBS.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\camer\STM32CubeIDE\workspace_1.17.0\SADS_MBS\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SADS_MBS.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+SADS_MBS_Homing.elf SADS_MBS_Homing.map: $(OBJS) $(USER_OBJS) C:\Users\camer\STM32CubeIDE\workspace_1.17.0\SADS_MBS_Homing\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "SADS_MBS_Homing.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\camer\STM32CubeIDE\workspace_1.17.0\SADS_MBS_Homing\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SADS_MBS_Homing.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -94,14 +94,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-SADS_MBS.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "SADS_MBS.list"
+SADS_MBS_Homing.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "SADS_MBS_Homing.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) SADS_MBS.elf SADS_MBS.list SADS_MBS.map default.size.stdout
+	-$(RM) SADS_MBS_Homing.elf SADS_MBS_Homing.list SADS_MBS_Homing.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
