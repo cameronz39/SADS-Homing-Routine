@@ -1,3 +1,4 @@
-../Core/Src/MTi.c:27:6:MTi_init	40	static
-../Core/Src/MTi.c:123:6:MTi_goToMeasurement	408	static
-../Core/Src/MTi.c:132:6:MTi_step	56	static
+../Core/Src/MTi.c:32:6:MTi_init	40	static
+../Core/Src/MTi.c:130:6:MTi_manual_init	552	static
+../Core/Src/MTi.c:179:6:MTi_goToMeasurement	408	static
+../Core/Src/MTi.c:188:6:MTi_step	152	static

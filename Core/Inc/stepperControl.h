@@ -4,13 +4,15 @@
 #include "main.h"
 #include "string.h"
 #include "stdio.h"
+#include "stdlib.h"
 
 static const int STEPS_PER_REV = 800;
 static const int HOMING_STEPS_REQ = STEPS_PER_REV*9;
 
-// Function prototypes and variables can use C++ linkage now.
+
 void stepperControl_init();
 void home();
+void manualControl();
 
 typedef struct {
     // GPIO information

@@ -33,6 +33,7 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 extern TIM_HandleTypeDef htim2;
 extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef huart5;
 extern I2C_HandleTypeDef hi2c1;
 /* USER CODE END Includes */
 
@@ -74,6 +75,9 @@ void Error_Handler(void);
 #define I2C_ADD2_GPIO_Port GPIOA
 #define STEP4_Pin GPIO_PIN_1
 #define STEP4_GPIO_Port GPIOB
+#define LIMIT_SWITCH2_Pin GPIO_PIN_2
+#define LIMIT_SWITCH2_GPIO_Port GPIOB
+#define LIMIT_SWITCH2_EXTI_IRQn EXTI2_IRQn
 #define DIR3_Pin GPIO_PIN_10
 #define DIR3_GPIO_Port GPIOB
 #define STEP1_Pin GPIO_PIN_13
@@ -90,12 +94,12 @@ void Error_Handler(void);
 #define PSEL_1_GPIO_Port GPIOA
 #define DIR1_Pin GPIO_PIN_10
 #define DIR1_GPIO_Port GPIOA
-#define LIMIT_SWITCH1_Pin GPIO_PIN_11
-#define LIMIT_SWITCH1_GPIO_Port GPIOA
-#define LIMIT_SWITCH1_EXTI_IRQn EXTI15_10_IRQn
-#define LIMIT_SWITCH2_Pin GPIO_PIN_12
-#define LIMIT_SWITCH2_GPIO_Port GPIOA
-#define LIMIT_SWITCH2_EXTI_IRQn EXTI15_10_IRQn
+#define LIMIT_SWITCH4_Pin GPIO_PIN_11
+#define LIMIT_SWITCH4_GPIO_Port GPIOA
+#define LIMIT_SWITCH4_EXTI_IRQn EXTI15_10_IRQn
+#define LIMIT_SWITCH3_Pin GPIO_PIN_12
+#define LIMIT_SWITCH3_GPIO_Port GPIOA
+#define LIMIT_SWITCH3_EXTI_IRQn EXTI15_10_IRQn
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
@@ -107,6 +111,9 @@ void Error_Handler(void);
 #define DIR2_GPIO_Port GPIOB
 #define RESET_Pin GPIO_PIN_5
 #define RESET_GPIO_Port GPIOB
+#define LIMIT_SWITCH1_Pin GPIO_PIN_6
+#define LIMIT_SWITCH1_GPIO_Port GPIOB
+#define LIMIT_SWITCH1_EXTI_IRQn EXTI9_5_IRQn
 
 /* USER CODE BEGIN Private defines */
 

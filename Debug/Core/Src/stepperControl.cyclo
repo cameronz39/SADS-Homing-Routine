@@ -1,5 +1,6 @@
-../Core/Src/stepperControl.c:14:6:doStep	7
-../Core/Src/stepperControl.c:49:6:stepperControl_init	1
-../Core/Src/stepperControl.c:88:6:home	3
-../Core/Src/stepperControl.c:116:6:HAL_GPIO_EXTI_Callback	9
-../Core/Src/stepperControl.c:155:6:HAL_TIM_PeriodElapsedCallback	2
+../Core/Src/stepperControl.c:24:6:doStep	7
+../Core/Src/stepperControl.c:59:6:stepperControl_init	1
+../Core/Src/stepperControl.c:99:6:home	5
+../Core/Src/stepperControl.c:145:6:manualControl	12
+../Core/Src/stepperControl.c:244:6:HAL_GPIO_EXTI_Callback	15
+../Core/Src/stepperControl.c:299:6:HAL_TIM_PeriodElapsedCallback	2

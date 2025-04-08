@@ -25,6 +25,7 @@
 #include <stepperControl.h>
 #include <string.h>
 #include "MTi.h"
+#include "app.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,6 +48,7 @@ I2C_HandleTypeDef hi2c1;
 
 TIM_HandleTypeDef htim2;
 
+UART_HandleTypeDef huart5;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
@@ -59,6 +61,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM2_Init(void);
+static void MX_UART5_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -100,22 +103,22 @@ int main(void)
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   MX_TIM2_Init();
+  MX_UART5_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2); // Start TIM2 interrupts
-  uint8_t sampleRate = 0x50;
-//  MTi_init(sampleRate);
-//  HAL_Delay(5000);
-  stepperControl_init();
-  home();
 
+  stepperControl_init();
+  app_start(&huart5);
+//
+//  uint8_t sampleRate = 0x40;
+//  MTi_init(sampleRate,&huart2);
 //  MTi_goToMeasurement();
 
-//  float measurements[3];
-//  float roll;
-//  float pitch;
-//  float yaw;
-//  int len;
-//  char g_textBuffer[80];
+
+//
+//	HAL_GPIO_WritePin(RESET_PORT, RESET_PIN, GPIO_PIN_SET);
+//	HAL_Delay(100);
+//	HAL_GPIO_WritePin(RESET_PORT, RESET_PIN, GPIO_PIN_RESET);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -125,6 +128,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	 MTi_step();
   }
   /* USER CODE END 3 */
 }
@@ -263,6 +267,39 @@ static void MX_TIM2_Init(void)
 }
 
 /**
+  * @brief UART5 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_UART5_Init(void)
+{
+
+  /* USER CODE BEGIN UART5_Init 0 */
+
+  /* USER CODE END UART5_Init 0 */
+
+  /* USER CODE BEGIN UART5_Init 1 */
+
+  /* USER CODE END UART5_Init 1 */
+  huart5.Instance = UART5;
+  huart5.Init.BaudRate = 9600;
+  huart5.Init.WordLength = UART_WORDLENGTH_8B;
+  huart5.Init.StopBits = UART_STOPBITS_1;
+  huart5.Init.Parity = UART_PARITY_NONE;
+  huart5.Init.Mode = UART_MODE_TX_RX;
+  huart5.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart5.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart5) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN UART5_Init 2 */
+
+  /* USER CODE END UART5_Init 2 */
+
+}
+
+/**
   * @brief USART2 Initialization Function
   * @param None
   * @retval None
@@ -311,6 +348,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, I2C_ADD0_Pin|I2C_ADD1_Pin|I2C_ADD2_Pin|PSEL_1_Pin, GPIO_PIN_SET);
@@ -349,6 +387,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : LIMIT_SWITCH2_Pin LIMIT_SWITCH1_Pin */
+  GPIO_InitStruct.Pin = LIMIT_SWITCH2_Pin|LIMIT_SWITCH1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
   /*Configure GPIO pin : PSEL_0_Pin */
   GPIO_InitStruct.Pin = PSEL_0_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -356,8 +400,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(PSEL_0_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LIMIT_SWITCH1_Pin LIMIT_SWITCH2_Pin */
-  GPIO_InitStruct.Pin = LIMIT_SWITCH1_Pin|LIMIT_SWITCH2_Pin;
+  /*Configure GPIO pins : LIMIT_SWITCH4_Pin LIMIT_SWITCH3_Pin */
+  GPIO_InitStruct.Pin = LIMIT_SWITCH4_Pin|LIMIT_SWITCH3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -376,8 +420,14 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(RESET_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+
   HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
