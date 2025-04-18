@@ -30,8 +30,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Inc/stepperControl.h ../Core/Inc/main.h ../Core/Inc/MTi.h \
- ../Core/Inc/xbus.h ../Core/Inc/board.h ../Core/Inc/app.h \
- ../Core/Inc/stepperControl.h ../Core/Inc/MTi.h
+ ../Core/Inc/xbus.h ../Core/Inc/board.h ../Core/Inc/MTi.h \
+ ../Core/Inc/app.h ../Core/Inc/stepperControl.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -68,6 +68,6 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/MTi.h:
 ../Core/Inc/xbus.h:
 ../Core/Inc/board.h:
+../Core/Inc/MTi.h:
 ../Core/Inc/app.h:
 ../Core/Inc/stepperControl.h:
-../Core/Inc/MTi.h:

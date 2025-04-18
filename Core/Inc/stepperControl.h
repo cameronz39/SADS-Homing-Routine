@@ -5,6 +5,7 @@
 #include "string.h"
 #include "stdio.h"
 #include "stdlib.h"
+#include "MTi.h"
 
 static const int STEPS_PER_REV = 800;
 static const int HOMING_STEPS_REQ = STEPS_PER_REV*9;

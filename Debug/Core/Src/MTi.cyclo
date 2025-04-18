@@ -1,4 +1,6 @@
 ../Core/Src/MTi.c:32:6:MTi_init	13
-../Core/Src/MTi.c:130:6:MTi_manual_init	7
-../Core/Src/MTi.c:179:6:MTi_goToMeasurement	1
-../Core/Src/MTi.c:188:6:MTi_step	8
+../Core/Src/MTi.c:133:6:MTi_manual_init	7
+../Core/Src/MTi.c:182:6:MTi_goToMeasurement	1
+../Core/Src/MTi.c:191:6:MTi_step	9
+../Core/Src/MTi.c:262:6:readAndPrintNotification	4
+../Core/Src/MTi.c:278:6:MTi_test_init	7

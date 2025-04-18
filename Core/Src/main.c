@@ -107,14 +107,22 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2); // Start TIM2 interrupts
 
-  stepperControl_init();
-  app_start(&huart5);
+
+
+//  stepperControl_init();
+//  app_start(&huart5);
 //
-//  uint8_t sampleRate = 0x40;
-//  MTi_init(sampleRate,&huart2);
-//  MTi_goToMeasurement();
+    uint8_t sampleRate = 0x03;
+    MTi_init(sampleRate,&huart2);
+    MTi_goToMeasurement();
 
+      HAL_GPIO_WritePin(RESET_PORT, RESET_PIN, GPIO_PIN_SET);
+      HAL_Delay(100);
+      HAL_GPIO_WritePin(RESET_PORT, RESET_PIN, GPIO_PIN_RESET);
 
+      while(1) {
+    	  MTi_test_init();
+      }
 //
 //	HAL_GPIO_WritePin(RESET_PORT, RESET_PIN, GPIO_PIN_SET);
 //	HAL_Delay(100);
@@ -128,7 +136,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	 MTi_step();
+	// MTi_step(&huart2);
   }
   /* USER CODE END 3 */
 }
