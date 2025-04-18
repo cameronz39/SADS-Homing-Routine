@@ -17,6 +17,6 @@
 void MTi_manual_init(UART_HandleTypeDef *huart);
 void MTi_init(uint8_t sampleRate, UART_HandleTypeDef *huart);
 void MTi_goToMeasurement();
-void MTi_step(UART_HandleTypeDef *huart);
-void MTi_test_init();
+void MTi_step();
+
 #endif /* INC_MTI_H_ */

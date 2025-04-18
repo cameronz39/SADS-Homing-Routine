@@ -3,4 +3,4 @@
 ../Core/Src/stepperControl.c:99:6:home	16	static
 ../Core/Src/stepperControl.c:145:6:manualControl	552	static
 ../Core/Src/stepperControl.c:244:6:HAL_GPIO_EXTI_Callback	40	static,ignoring_inline_asm
-../Core/Src/stepperControl.c:299:6:HAL_TIM_PeriodElapsedCallback	16	static
+../Core/Src/stepperControl.c:299:6:HAL_TIM_PeriodElapsedCallback	24	static

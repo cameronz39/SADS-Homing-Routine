@@ -1,6 +1,5 @@
 ../Core/Src/MTi.c:32:6:MTi_init	40	static
 ../Core/Src/MTi.c:133:6:MTi_manual_init	552	static
 ../Core/Src/MTi.c:182:6:MTi_goToMeasurement	408	static
-../Core/Src/MTi.c:191:6:MTi_step	464	static
-../Core/Src/MTi.c:262:6:readAndPrintNotification	40	static
-../Core/Src/MTi.c:278:6:MTi_test_init	232	static
+../Core/Src/MTi.c:191:6:readAndPrintNotification	40	static
+../Core/Src/MTi.c:207:6:MTi_step	232	static

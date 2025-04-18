@@ -300,6 +300,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM2) {
         doStep();
     }
+
+    if(htim->Instance == TIM3) {
+    	int len = snprintf(UART_buffer2, sizeof(UART_buffer2), "TIM3 Interuppt triggered\n");
+    	HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer2, len, 100);
+    	MTi_step();
+    }
 }
 
 

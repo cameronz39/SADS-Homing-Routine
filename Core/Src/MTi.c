@@ -188,77 +188,6 @@ void MTi_goToMeasurement() {
 	HAL_I2C_Master_Transmit(&hi2c1, (MTI_I2C_DEVICE_ADDRESS << 1), (uint8_t*)buffer, rawLength, 100);
 }
 
-void MTi_step(UART_HandleTypeDef *huart) {
-
-    // Check if new data is available.
-     if (checkDataReadyLineMain()) {
-		int len;
-		char txBuffer[256];
-        HAL_I2C_Mem_Read(&hi2c1, (MTI_I2C_DEVICE_ADDRESS << 1),
-                           XBUS_PIPE_STATUS, 1, status, sizeof(status), 100);
-        notificationMessageSize = status[0] | (status[1] << 8);
-        measurementMessageSize    = status[2] | (status[3] << 8);
-
-        len = snprintf(txBuffer, sizeof(txBuffer), "Notif: %d, Msg: %d \n", notificationMessageSize,measurementMessageSize);
-        HAL_UART_Transmit(huart, (uint8_t *)txBuffer, len, 100);
-     }
-    if (notificationMessageSize) {
-    	readAndPrintNotification(huart);
-    }
-
-    if (measurementMessageSize && measurementMessageSize < sizeof(m_dataBuffer)) {
-        if (checkDataReadyLineMain()) {
-            // Read the measurement data into the buffer (starting at offset 2)
-            HAL_I2C_Mem_Read(&hi2c1, (MTI_I2C_DEVICE_ADDRESS << 1),
-                               XBUS_MEASUREMENT_PIPE, 1, &m_dataBuffer[2],
-                               measurementMessageSize, 100);
-
-            // Check that the message is of type XMID_MtData2
-            if (Xbus_getMessageId(m_dataBuffer) == XMID_MtData2) {
-//            	int len = snprintf(UART_buffer, sizeof(UART_buffer), "Took a meausrement\n");
-//            	HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 10000);
-                int index = 4;  // Start index for reading the payload
-
-                uint16_t dataId   = extractUint16(m_dataBuffer, &index);
-                uint8_t  dataSize = extractUint8(m_dataBuffer, &index);
-                float rotMatrixBuffer[9];
-                if (dataId == 0x2020) {
-                	rotMatrixBuffer[0] = extractFloat(m_dataBuffer, &index);
-                	rotMatrixBuffer[1] = extractFloat(m_dataBuffer, &index);
-                	rotMatrixBuffer[2] = extractFloat(m_dataBuffer, &index);
-                	rotMatrixBuffer[3] = extractFloat(m_dataBuffer, &index); // roll
-                	rotMatrixBuffer[4] = extractFloat(m_dataBuffer, &index); // pitch
-                	rotMatrixBuffer[5] = extractFloat(m_dataBuffer, &index); // yaw
-                	rotMatrixBuffer[6] = extractFloat(m_dataBuffer, &index); // roll
-                	rotMatrixBuffer[7] = extractFloat(m_dataBuffer, &index); // pitch
-                	rotMatrixBuffer[8] = extractFloat(m_dataBuffer, &index); // yaw
-                }
-
-                dataId   = extractUint16(m_dataBuffer, &index);
-				dataSize = extractUint8(m_dataBuffer, &index);
-				float quatBuffer[9];
-				if (dataId == 0x2010) {
-					quatBuffer[0] = extractFloat(m_dataBuffer, &index);
-					quatBuffer[1] = extractFloat(m_dataBuffer, &index);
-					quatBuffer[2] = extractFloat(m_dataBuffer, &index);
-					quatBuffer[3] = extractFloat(m_dataBuffer, &index);
-
-				}
-				int len;
-
-                len = snprintf(UART_buffer, sizeof(UART_buffer), "Rotation Matrix:\n  %.2f %.2f %.2f\n %.2f %.2f %.2f\n %.2f %.2f %.2f\n ",rotMatrixBuffer[0],rotMatrixBuffer[1],rotMatrixBuffer[2],rotMatrixBuffer[3],rotMatrixBuffer[4],rotMatrixBuffer[5],rotMatrixBuffer[6],rotMatrixBuffer[7],rotMatrixBuffer[8]);
-                HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 10000);
-
-				len = snprintf(UART_buffer, sizeof(UART_buffer), "Quaternion: %.2f %.2f %.2f %.2f\n",quatBuffer[0],quatBuffer[1],quatBuffer[2],quatBuffer[3]);
-				HAL_UART_Transmit(huart, (uint8_t *)UART_buffer, len, 10000);
-
-				len = snprintf(UART_buffer, sizeof(UART_buffer), "g in body: %.2f %.2f %.2f\n",-9.81*rotMatrixBuffer[2],-9.81*rotMatrixBuffer[5],-9.81*rotMatrixBuffer[8]);
-				HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 10000);
-            }
-        }
-    }
-}
-
 void readAndPrintNotification(UART_HandleTypeDef *huart) {
 	int len;
 	HAL_I2C_Mem_Read(&hi2c1, (MTI_I2C_DEVICE_ADDRESS << 1), XBUS_MEASUREMENT_PIPE, 1, &m_dataBuffer[2], measurementMessageSize, 100);
@@ -275,7 +204,7 @@ void readAndPrintNotification(UART_HandleTypeDef *huart) {
 	}
 }
 
-void MTi_test_init() {
+void MTi_step() {
 	m_dataBuffer[0] = XBUS_PREAMBLE;
 	m_dataBuffer[1] = XBUS_MASTERDEVICE;
 	state = 60;
@@ -289,80 +218,11 @@ void MTi_test_init() {
 		notificationMessageSize = status[0] | (status[1] << 8);
 		measurementMessageSize = status[2] | (status[3] << 8);
 
-//		// 2) Read incoming notification, save into m_dataBuffer (being sure to skip preamble and master device bytes)
-//		if (notificationMessageSize && notificationMessageSize < sizeof(m_dataBuffer)) {
-//
-//				HAL_I2C_Mem_Read(&hi2c1, (MTI_I2C_DEVICE_ADDRESS << 1), XBUS_NOTIFICATION_PIPE, 1, &m_dataBuffer[2], notificationMessageSize, 100);
-//
-//
-//			// 3) User xbus.h helper to read the message ID and enter a new program state if needed
-//			if (Xbus_getMessageId(m_dataBuffer) == XMID_Wakeup && state == WAITING_FOR_WAKEUP)
-//			{
-//				len = snprintf(UART_buffer, sizeof(UART_buffer), "Got Wakeup\n");
-//				HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 100);
-//
-//				Xbus_message(m_xbusTxBuffer, 0xFF, XMID_ReqDid, 0);
-//
-//				rawLength = Xbus_createRawMessageHelper(buffer, m_xbusTxBuffer);
-//				HAL_I2C_Master_Transmit(&hi2c1, (MTI_I2C_DEVICE_ADDRESS << 1), (uint8_t*)buffer, rawLength, 100);
-//
-//				state = WAITING_FOR_ID;
-//			}
-//
-//			if (Xbus_getMessageId(m_dataBuffer) == XMID_DeviceId && state == WAITING_FOR_ID)
-//			{
-//				len = snprintf(UART_buffer, sizeof(UART_buffer), "Got Device ID\n");
-//				HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 100);
-//
-//				Xbus_message(m_xbusTxBuffer, 0xFF, XMID_SetOutputConfig, 4);
-//				// Set Output mode: Euler angles (0x2030)
-//				Xbus_getPointerToPayload(m_xbusTxBuffer)[0] = 0x20;
-//				Xbus_getPointerToPayload(m_xbusTxBuffer)[1] = 0x30;
-//				// Set Output rate: 1Hz (0x0001)
-//				Xbus_getPointerToPayload(m_xbusTxBuffer)[2] = 0x00;
-//				Xbus_getPointerToPayload(m_xbusTxBuffer)[3] = 0x03;
-//
-//				// uint8_t buffer[128];
-//				rawLength = Xbus_createRawMessageHelper(buffer, m_xbusTxBuffer);
-//				HAL_I2C_Master_Transmit(&hi2c1, (MTI_I2C_DEVICE_ADDRESS << 1), (uint8_t*)buffer, rawLength, 100);
-//
-//				state = WAITING_FOR_CONFIG_ACK;
-//			}
-//
-//			// note: the config ack message is just the output config itself
-//			if(Xbus_getMessageId(m_dataBuffer) == XMID_OutputConfig && state == WAITING_FOR_CONFIG_ACK)
-//			{
-//				len = snprintf(UART_buffer, sizeof(UART_buffer), "Got config ACK\nGoing into measurement mode...\n");
-//				HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 100);
-//
-//				Xbus_message(m_xbusTxBuffer, 0xFF, XMID_GotoMeasurement, 0);
-//				rawLength = Xbus_createRawMessageHelper(buffer, m_xbusTxBuffer);
-//				HAL_I2C_Master_Transmit(&hi2c1, (MTI_I2C_DEVICE_ADDRESS << 1), (uint8_t*)buffer, rawLength, 100);
-//				state = READY;
-//
-//			}
-//		}
 
 		if (measurementMessageSize && measurementMessageSize < sizeof(m_dataBuffer)) {
 			HAL_I2C_Mem_Read(&hi2c1, (MTI_I2C_DEVICE_ADDRESS << 1), XBUS_MEASUREMENT_PIPE, 1, &m_dataBuffer[2], measurementMessageSize, 100);
 
 			if(Xbus_getMessageId(m_dataBuffer) == XMID_MtData2) {
-//				int index = 4;
-//
-//				uint16_t dataId = extractUint16(m_dataBuffer, &index);
-//				uint8_t dataSize = extractUint8(m_dataBuffer, &index);
-//				if (dataId == 0x2030 && dataSize == 12)
-//				{
-//					float roll = extractFloat(m_dataBuffer, &index);
-//					float pitch = extractFloat(m_dataBuffer, &index);
-//					float yaw = extractFloat(m_dataBuffer, &index);
-//					int len2 = snprintf(UART_buffer, sizeof(UART_buffer), "XMID_MtData2: roll = %.2f, pitch = %.2f, yaw = %.2f\n", roll , pitch, yaw);
-//					HAL_UART_Transmit(&huart2, (uint8_t*)UART_buffer, len2, 100);
-//				} else {
-//					len = snprintf(UART_buffer, sizeof(UART_buffer), "Error reading message ID\n");
-//					HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 100);
-//				}
-
                 int index = 4;  // Start index for reading the payload
 
                 uint16_t dataId   = extractUint16(m_dataBuffer, &index);
