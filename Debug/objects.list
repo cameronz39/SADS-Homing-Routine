@@ -1,7 +1,6 @@
 "./Core/Src/MTi.o"
 "./Core/Src/app.o"
 "./Core/Src/main.o"
-"./Core/Src/pid.o"
 "./Core/Src/stepperControl.o"
 "./Core/Src/stm32f4xx_hal_msp.o"
 "./Core/Src/stm32f4xx_it.o"
