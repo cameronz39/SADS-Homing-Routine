@@ -25,3 +25,6 @@ Thumbs.db
 
 # STlink logs
 st-link_gdbserver.log
+
+# Launch Configs
+*.launch
