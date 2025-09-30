@@ -1,0 +1,27 @@
+# Build artifacts
+/Debug/
+/Release/
+/build/
+/*.elf
+/*.bin
+/*.hex
+/*.list
+/*.map
+/*.out
+/*.o
+/*.d
+
+# CubeMX caches
+/.mxproject
+/.stm32cubemx
+*.log
+
+# Eclipse/CubeIDE workspace (not the project)
+/.metadata/
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# STlink logs
+st-link_gdbserver.log

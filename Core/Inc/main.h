@@ -32,9 +32,12 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim1;
 extern UART_HandleTypeDef huart2;
-extern UART_HandleTypeDef huart5;
+extern UART_HandleTypeDef huart3;
 extern I2C_HandleTypeDef hi2c1;
+extern I2C_HandleTypeDef hi2c2;
+extern UART_HandleTypeDef *user_huart;
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -60,9 +63,9 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define B1_Pin GPIO_PIN_13
-#define B1_GPIO_Port GPIOC
-#define B1_EXTI_IRQn EXTI15_10_IRQn
+#define LIMIT_SWITCH5_Pin GPIO_PIN_13
+#define LIMIT_SWITCH5_GPIO_Port GPIOC
+#define LIMIT_SWITCH5_EXTI_IRQn EXTI15_10_IRQn
 #define USART_TX_Pin GPIO_PIN_2
 #define USART_TX_GPIO_Port GPIOA
 #define USART_RX_Pin GPIO_PIN_3
@@ -78,8 +81,6 @@ void Error_Handler(void);
 #define LIMIT_SWITCH2_Pin GPIO_PIN_2
 #define LIMIT_SWITCH2_GPIO_Port GPIOB
 #define LIMIT_SWITCH2_EXTI_IRQn EXTI2_IRQn
-#define DIR3_Pin GPIO_PIN_10
-#define DIR3_GPIO_Port GPIOB
 #define STEP1_Pin GPIO_PIN_13
 #define STEP1_GPIO_Port GPIOB
 #define STEP2_Pin GPIO_PIN_14
@@ -88,6 +89,8 @@ void Error_Handler(void);
 #define STEP3_GPIO_Port GPIOB
 #define PSEL_0_Pin GPIO_PIN_7
 #define PSEL_0_GPIO_Port GPIOC
+#define DIR3_Pin GPIO_PIN_8
+#define DIR3_GPIO_Port GPIOC
 #define DIR4_Pin GPIO_PIN_8
 #define DIR4_GPIO_Port GPIOA
 #define PSEL_1_Pin GPIO_PIN_9

@@ -22,11 +22,16 @@ uint8_t m_xbusTxBuffer[256]; // Buffer for outgoing messages
 uint8_t buffer[128]; // Helper buffer for creating outgoing messages
 size_t rawLength;
 
+float roll_mounting_error = -1.35;
+float pitch_mounting_error = -1.11;
 
 uint16_t notificationMessageSize;
 uint16_t measurementMessageSize;
 uint8_t status[4];
 
+float roll, pitch, yaw;
+
+float q0, q1, q2, q3;
 
 void readAndPrintNotification(UART_HandleTypeDef *huart);
 void MTi_init(uint8_t sampleRate, UART_HandleTypeDef *huart) {
@@ -73,7 +78,9 @@ void MTi_init(uint8_t sampleRate, UART_HandleTypeDef *huart) {
 					len = snprintf(UART_buffer, sizeof(UART_buffer), "Got Device ID\n");
 					HAL_UART_Transmit(huart, (uint8_t *)UART_buffer, len, 10000);
 
-					Xbus_message(m_xbusTxBuffer, 0xFF, XMID_SetOutputConfig, 12);
+					// IMPORTANT: be sure to change the length of this message depending on which
+					// meausurements you include
+					Xbus_message(m_xbusTxBuffer, 0xFF, XMID_SetOutputConfig, 16);
 					// Set Output mode: RotMatrix (0x2020)
 					Xbus_getPointerToPayload(m_xbusTxBuffer)[0] = 0x20;
 					Xbus_getPointerToPayload(m_xbusTxBuffer)[1] = 0x20;
@@ -94,6 +101,14 @@ void MTi_init(uint8_t sampleRate, UART_HandleTypeDef *huart) {
 					// Set Output rate
 					Xbus_getPointerToPayload(m_xbusTxBuffer)[10] = 0x00;
 					Xbus_getPointerToPayload(m_xbusTxBuffer)[11] = sampleRate;
+
+					// Set Output mode: Euler Angles (0x2030)
+					Xbus_getPointerToPayload(m_xbusTxBuffer)[12] = 0x20;
+					Xbus_getPointerToPayload(m_xbusTxBuffer)[13] = 0x30;
+					// Set Output rate
+					Xbus_getPointerToPayload(m_xbusTxBuffer)[14] = 0x00;
+					Xbus_getPointerToPayload(m_xbusTxBuffer)[15] = sampleRate;
+
 
 					rawLength = Xbus_createRawMessageHelper(buffer, m_xbusTxBuffer);
 					HAL_I2C_Master_Transmit(&hi2c1, (MTI_I2C_DEVICE_ADDRESS << 1), (uint8_t*)buffer, rawLength, 100);
@@ -200,14 +215,12 @@ void readAndPrintNotification(UART_HandleTypeDef *huart) {
 	        	HAL_UART_Transmit(huart, (uint8_t *)UART_buffer, len, 10000);
 	        }
 	    }
-	    printf("\n");
 	}
 }
 
 void MTi_step() {
 	m_dataBuffer[0] = XBUS_PREAMBLE;
 	m_dataBuffer[1] = XBUS_MASTERDEVICE;
-	state = 60;
 
 	// 1) Read pipe status and save incoming message sizes
 	//	len = snprintf(UART_buffer, sizeof(UART_buffer), "Notif: %d, Msg: %d \n", notificationMessageSize,measurementMessageSize);
@@ -227,6 +240,7 @@ void MTi_step() {
 
                 uint16_t dataId   = extractUint16(m_dataBuffer, &index);
                 uint8_t  dataSize = extractUint8(m_dataBuffer, &index);
+
                 float rotMatrixBuffer[9];
                 if (dataId == 0x2020) {
                 	rotMatrixBuffer[0] = extractFloat(m_dataBuffer, &index);
@@ -242,25 +256,58 @@ void MTi_step() {
 
                 dataId   = extractUint16(m_dataBuffer, &index);
 				dataSize = extractUint8(m_dataBuffer, &index);
-				float quatBuffer[9];
+				float quatBuffer[4];
 				if (dataId == 0x2010) {
 					quatBuffer[0] = extractFloat(m_dataBuffer, &index);
 					quatBuffer[1] = extractFloat(m_dataBuffer, &index);
 					quatBuffer[2] = extractFloat(m_dataBuffer, &index);
 					quatBuffer[3] = extractFloat(m_dataBuffer, &index);
-
 				}
-				int len;
+				q0 = quatBuffer[0];
+				q1 = quatBuffer[1];
+				q2 = quatBuffer[2];
+				q3 = quatBuffer[3];
 
-                len = snprintf(UART_buffer, sizeof(UART_buffer), "Rotation Matrix:\n  %.2f %.2f %.2f\n %.2f %.2f %.2f\n %.2f %.2f %.2f\n ",rotMatrixBuffer[0],rotMatrixBuffer[1],rotMatrixBuffer[2],rotMatrixBuffer[3],rotMatrixBuffer[4],rotMatrixBuffer[5],rotMatrixBuffer[6],rotMatrixBuffer[7],rotMatrixBuffer[8]);
-                HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 10000);
+				dataId   = extractUint16(m_dataBuffer, &index);
+				dataSize = extractUint8(m_dataBuffer, &index);
+				float bodyRateBuffer[3];
+				if (dataId == 0x8020) {
+					bodyRateBuffer[0] = extractFloat(m_dataBuffer, &index);
+					bodyRateBuffer[1] = extractFloat(m_dataBuffer, &index);
+					bodyRateBuffer[2] = extractFloat(m_dataBuffer, &index);
+				}
+				dataId   = extractUint16(m_dataBuffer, &index);
+				dataSize = extractUint8(m_dataBuffer, &index);
 
-				len = snprintf(UART_buffer, sizeof(UART_buffer), "Quaternion: %.2f %.2f %.2f %.2f\n",quatBuffer[0],quatBuffer[1],quatBuffer[2],quatBuffer[3]);
-				HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 10000);
+				float eulerAngleBuffer[3];
+				if (dataId == 0x2030) {
+					eulerAngleBuffer[0] = extractFloat(m_dataBuffer, &index);
+					eulerAngleBuffer[1] = extractFloat(m_dataBuffer, &index);
+					eulerAngleBuffer[2] = extractFloat(m_dataBuffer, &index);
+				}
 
-				len = snprintf(UART_buffer, sizeof(UART_buffer), "g in body: %.2f %.2f %.2f\n",-9.81*rotMatrixBuffer[2],-9.81*rotMatrixBuffer[5],-9.81*rotMatrixBuffer[8]);
-				HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 10000);
+				roll = eulerAngleBuffer[0] - roll_mounting_error;
+				pitch = eulerAngleBuffer[1]- pitch_mounting_error;
+				yaw = eulerAngleBuffer[2];
+
+
+//                len = snprintf(UART_buffer, sizeof(UART_buffer), "Rotation Matrix:\n  %.2f %.2f %.2f\n %.2f %.2f %.2f\n %.2f %.2f %.2f\n ",rotMatrixBuffer[0],rotMatrixBuffer[1],rotMatrixBuffer[2],rotMatrixBuffer[3],rotMatrixBuffer[4],rotMatrixBuffer[5],rotMatrixBuffer[6],rotMatrixBuffer[7],rotMatrixBuffer[8]);
+//                HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 10000);
+//
+//				len = snprintf(UART_buffer, sizeof(UART_buffer), "Quaternion: %.2f %.2f %.2f %.2f\n",quatBuffer[0],quatBuffer[1],quatBuffer[2],quatBuffer[3]);
+//				HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 10000);
+//
+//				len = snprintf(UART_buffer, sizeof(UART_buffer), "g in Body: %.2f %.2f %.2f\n",-9.81*rotMatrixBuffer[2],-9.81*rotMatrixBuffer[5],-9.81*rotMatrixBuffer[8]);
+//				HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 10000);
+//
+//				len = snprintf(UART_buffer, sizeof(UART_buffer), "Body Rates: %.2f %.2f %.2f\n",bodyRateBuffer[0],bodyRateBuffer[1],bodyRateBuffer[2]);
+//				HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 10000);
+//
+//				len = snprintf(UART_buffer, sizeof(UART_buffer), "Euler Angles: %.2f %.2f %.2f\n",eulerAngleBuffer[0],eulerAngleBuffer[1],eulerAngleBuffer[2]);
+//				HAL_UART_Transmit(&huart2, (uint8_t *)UART_buffer, len, 10000);
 			}
 		}
 	}
 }
+
+

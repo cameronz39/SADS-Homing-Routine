@@ -7,13 +7,16 @@
 #include "stdlib.h"
 #include "MTi.h"
 
-static const int STEPS_PER_REV = 800;
+static const int STEPS_PER_REV = 3200;
 static const int HOMING_STEPS_REQ = STEPS_PER_REV*9;
 
 
 void stepperControl_init();
-void home();
+void home(UART_HandleTypeDef *huart);
 void manualControl();
+void doStep();
+
+#define TEENSY_ADDR 0x42
 
 typedef struct {
     // GPIO information
